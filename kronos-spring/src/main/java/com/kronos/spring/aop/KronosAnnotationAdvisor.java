@@ -42,8 +42,8 @@ public class KronosAnnotationAdvisor extends AbstractPointcutAdvisor implements 
 
     public KronosAnnotationAdvisor(Advice advice,Class<? extends Annotation> annotation) {
         this.advice = advice;
-        this.pointcut = buildPointcut();
         this.annotation = annotation;
+        this.pointcut = buildPointcut();
     }
 
     @Override
