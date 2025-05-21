@@ -13,7 +13,6 @@ import java.util.Date;
  */
 public class DateConverter implements TypeConverter<Date> {
 
-
     @Override
     public Object convert(Date value, ZoneId fromZone, ZoneId toZone, String format) {
         if (value == null) {

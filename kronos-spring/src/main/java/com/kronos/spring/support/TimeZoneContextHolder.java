@@ -1,6 +1,6 @@
 package com.kronos.spring.support;
 
-import java.time.ZoneId;
+import java.util.TimeZone;
 
 /**
  * @author zhangyh
@@ -8,18 +8,35 @@ import java.time.ZoneId;
  * @desc
  */
 public class TimeZoneContextHolder {
-    private static final ThreadLocal<ZoneId> contextHolder = new ThreadLocal<>();
+    private static final ThreadLocal<TimeZone> USER_TIME_ZONE = new ThreadLocal<>();
 
-    public static void setTimeZone(String zoneId) {
-        contextHolder.set(ZoneId.of(zoneId));
+    /**
+     * 设置当前用户的时区
+     */
+    public static void setTimeZone(TimeZone timeZone) {
+        USER_TIME_ZONE.set(timeZone);
     }
 
-    public static ZoneId getTimeZone() {
-        return contextHolder.get() != null ? contextHolder.get() : ZoneId.of("UTC");
+    /**
+     * 设置当前用户的时区（字符串形式）
+     */
+    public static void setTimeZone(String timeZoneId) {
+        USER_TIME_ZONE.set(TimeZone.getTimeZone(timeZoneId));
     }
 
+    /**
+     * 获取当前用户的时区
+     */
+    public static TimeZone getTimeZone() {
+        return USER_TIME_ZONE.get();
+    }
+
+
+    /**
+     * 清除当前用户的时区信息
+     */
     public static void clear() {
-        contextHolder.remove();
+        USER_TIME_ZONE.remove();
     }
 
 }
