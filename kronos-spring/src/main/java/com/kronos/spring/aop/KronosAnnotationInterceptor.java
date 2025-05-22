@@ -31,7 +31,6 @@ public class KronosAnnotationInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
-        Object aThis = invocation.getThis();
         Object[] arguments = invocation.getArguments();
         ZoneId zoneId = ZoneId.of(TimeZoneContextHolder.getTimeZone().getID());
         beforeMethod(zoneId, arguments, method);
@@ -44,13 +43,10 @@ public class KronosAnnotationInterceptor implements MethodInterceptor {
         if (method.getDeclaringClass() == Object.class) {
             return "";
         }
-        converter.convertToClientTimeZone(result, zoneId);
-
-        return null;
+        return converter.convertToClientTimeZone(result, zoneId);
     }
 
-    public  void beforeMethod(ZoneId zoneId, Object[] params, Method method) {
-        Class<?>[] paramsType = method.getParameterTypes();
+    public void beforeMethod(ZoneId zoneId, Object[] params, Method method) {
         //获取方法参数上的注解（因为方法可以有多参数；参数上可以有多注解，返回二维数组）
         Annotation[][] an = method.getParameterAnnotations();
         int index = 0;
@@ -60,11 +56,9 @@ public class KronosAnnotationInterceptor implements MethodInterceptor {
             //循环参数上的注解
             for (Annotation an2 : an1) {
                 //有自定义校验注解
-                if (an2 instanceof Time && param!=null) {
-                    Class<?> classType = paramsType[index];
+                if (an2 instanceof Time && param != null) {
                     //时区转换
-                    converter.convertToBackendTimeZone(param,zoneId);
-                    Object result = null;
+                    Object result = converter.convertToBackendTimeZone(param, zoneId);
                     if (result!=null) {
                         params[index] = result;
                     }

@@ -30,55 +30,55 @@ public class TimeZoneConverter {
     /**
      * 将对象从客户端时区转换为后端时区
      */
-    public void convertToBackendTimeZone(Object object, ZoneId clientZoneId) {
+    public Object convertToBackendTimeZone(Object object, ZoneId clientZoneId) {
         if (object == null) {
-            return;
+            return null;
         }
 
         if (object instanceof Collection) {
             ((Collection<?>) object).forEach(item -> convertToBackendTimeZone(item, clientZoneId));
-            return;
+            return null;
         }
 
         if (object instanceof Map) {
             ((Map<?, ?>) object).values().forEach(value -> convertToBackendTimeZone(value, clientZoneId));
-            return;
+            return null;
         }
 
-        // 基本类型或String直接返回
+        // 处理基础类型
         if (isSimpleType(object.getClass())) {
-            return;
+            return processBasicType(object, clientZoneId, true);
         }
 
-        // 处理字段
-        processFields(object, clientZoneId, true);
+        // 处理对象类型
+        return processFields(object, clientZoneId, true);
     }
 
     /**
      * 将对象从后端时区转换为客户端时区
      */
-    public void convertToClientTimeZone(Object object, ZoneId clientZoneId) {
+    public Object convertToClientTimeZone(Object object, ZoneId clientZoneId) {
         if (object == null) {
-            return;
+            return null;
         }
 
         if (object instanceof Collection) {
             ((Collection<?>) object).forEach(item -> convertToClientTimeZone(item, clientZoneId));
-            return;
+            return null;
         }
 
         if (object instanceof Map) {
             ((Map<?, ?>) object).values().forEach(value -> convertToClientTimeZone(value, clientZoneId));
-            return;
+            return null;
         }
 
-        // 基本类型或String直接返回
+        // 处理基础类型
         if (isSimpleType(object.getClass())) {
-            return;
+            return processBasicType(object, clientZoneId, false);
         }
 
-        // 处理字段
-        processFields(object, clientZoneId, false);
+        // 处理对象类型
+        return processFields(object, clientZoneId, false);
     }
 
     /**
@@ -87,7 +87,27 @@ public class TimeZoneConverter {
      * @param clientZoneId 客户端时区
      * @param toBackend 是否转换到后端时区
      */
-    private void processFields(Object object, ZoneId clientZoneId, boolean toBackend) {
+    /**
+     * 处理基础类型的时区转换
+     */
+    private Object processBasicType(Object object, ZoneId clientZoneId, boolean toBackend) {
+        if (!isSimpleType(object.getClass()) || !converters.containsKey(object.getClass())) {
+            return object;
+        }
+        TypeConverter<?> converter = converters.get(object.getClass());
+        ZoneId backendZoneId = ZoneId.of(properties.getBackendZoneId());
+        if (toBackend) {
+            return callConvert(converter, object, clientZoneId, backendZoneId, properties.getDefaultDateTimeFormat());
+        } else {
+            return callConvert(converter, object, backendZoneId, clientZoneId, properties.getDefaultDateTimeFormat());
+        }
+    }
+
+    /**
+     * 处理对象类型的时区转换
+     */
+    private Object processFields(Object object, ZoneId clientZoneId, boolean toBackend) {
+
         Class<?> clazz = object.getClass();
 
         ReflectionUtils.doWithFields(clazz, field -> {
@@ -143,7 +163,7 @@ public class TimeZoneConverter {
             // 处理时间类型字段
             TypeConverter<?> converter = converters.get(field.getType());
             if (converter != null) {
-                String format = annotation != null ? annotation.format() : properties.getDefaultDateTimeFormat();
+                String format = annotation.format();
                 ZoneId backendZoneId = ZoneId.of(properties.getBackendZoneId());
 
                 Object convertedValue;
@@ -156,6 +176,7 @@ public class TimeZoneConverter {
                 field.set(object, convertedValue);
             }
         });
+        return object;
     }
 
     /**
@@ -168,6 +189,6 @@ public class TimeZoneConverter {
     private boolean isSimpleType(Class<?> clazz) {
         return clazz.isPrimitive() || clazz.equals(String.class) || Number.class.isAssignableFrom(clazz) ||
                 Boolean.class.equals(clazz) || Character.class.equals(clazz) ||
-                converters.containsKey(clazz);
+                !converters.containsKey(clazz);
     }
 }
