@@ -1,13 +1,11 @@
 package com.kronos.spring.aop;
 
-import com.kronos.spring.annotation.Time;
 import com.kronos.spring.support.TimeZoneContextHolder;
 import com.kronos.spring.support.converter.TimeZoneConverter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.time.ZoneId;
 
@@ -39,40 +37,20 @@ public class KronosAnnotationInterceptor implements MethodInterceptor {
         if (method.getDeclaringClass() == Object.class) {
             return "";
         }
-        return converter.convertToClientTimeZone(result, zoneId);
+        return converter.toClientTimeZone(result, zoneId);
     }
 
     public void beforeMethod(ZoneId zoneId, Object[] params, Method method) {
         //获取方法参数上的注解（因为方法可以有多参数；参数上可以有多注解，返回二维数组）
-        Annotation[][] paramAnnotations = method.getParameterAnnotations();
-
         for (int i = 0; i < params.length; i++) {
             Object param = params[i];
             if (param == null) {
                 continue;
             }
-
-            // 检查参数级别的注解
-            Annotation[] annotations = paramAnnotations[i];
-            boolean hasTimeAnnotation = this.hasTimeAnnotation(annotations);
-
-            // 处理参数
-            Object convertedParam = converter.processParameter(param, zoneId, hasTimeAnnotation);
+            Object convertedParam = converter.toBackendTimeZone(param, zoneId);
             if (convertedParam != param) {
                 params[i] = convertedParam;
             }
         }
-    }
-
-    /**
-     * 检查注解数组中是否包含@Time注解
-     */
-    private boolean hasTimeAnnotation(Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Time) {
-                return true;
-            }
-        }
-        return false;
     }
 }
