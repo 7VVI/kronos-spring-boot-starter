@@ -1,6 +1,6 @@
 package com.kronos.spring.config;
 
-import com.kronos.spring.annotation.Time;
+import com.kronos.spring.annotation.ConvertTime;
 import com.kronos.spring.aop.KronosAnnotationAdvisor;
 import com.kronos.spring.aop.KronosAnnotationInterceptor;
 import com.kronos.spring.support.converter.TimeZoneConverter;
@@ -23,6 +23,6 @@ public class KronosBeanPostProcessor extends AbstractBeanFactoryAwareAdvisingPos
     @Override
     public void setBeanFactory(BeanFactory beanFactory) {
         KronosAnnotationInterceptor kronosAnnotationInterceptor = new KronosAnnotationInterceptor(this.timeZoneConverter);
-        this.advisor = new KronosAnnotationAdvisor(kronosAnnotationInterceptor, Time.class);
+        this.advisor = new KronosAnnotationAdvisor(kronosAnnotationInterceptor, ConvertTime.class);
     }
 }

@@ -41,7 +41,7 @@ public class KronosProperty {
     /**
      * 时间格式，用于字符串时间的解析和格式化
      */
-    private String defaultDateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    private String defaultDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 是否处理请求参数中的时区转换
