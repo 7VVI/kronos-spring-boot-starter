@@ -15,8 +15,8 @@
     <inceptionYear>2025</inceptionYear>
 
     <modules>
-        <module>kronos-spring</module>
-        <module>kronos-common</module>
+        <module>kronos-core</module>
+        <module>kronos-spring3-boot-starter</module>
     </modules>
 
     <licenses>
@@ -45,13 +45,13 @@
         <dependencies>
             <dependency>
                 <groupId>com.kronos</groupId>
-                <artifactId>kronos-spring</artifactId>
+                <artifactId>kronos-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.kronos</groupId>
-                <artifactId>kronos-common</artifactId>
+                <artifactId>kronos-spring3-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

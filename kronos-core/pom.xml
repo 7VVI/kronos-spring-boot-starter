@@ -7,13 +7,9 @@
         <artifactId>kronos-spring-boot-starter</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>kronos-spring</artifactId>
+    <artifactId>kronos-core</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.kronos</groupId>
-            <artifactId>kronos-common</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
