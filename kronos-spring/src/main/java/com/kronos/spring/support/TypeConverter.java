@@ -1,4 +1,4 @@
-package com.kronos.spring.support.converter;
+package com.kronos.spring.support;
 
 import java.time.ZoneId;
 
@@ -18,4 +18,10 @@ public interface TypeConverter<T> {
      * @return 转换后的值
      */
     Object convert(T value, ZoneId fromZone, ZoneId toZone, String format);
+
+    /**
+     * 支持的类型
+     * @return 类
+     */
+    Class<T> supportedType();
 }

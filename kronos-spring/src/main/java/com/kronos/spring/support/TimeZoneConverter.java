@@ -1,12 +1,11 @@
-package com.kronos.spring.support.converter;
+package com.kronos.spring.support;
 
 import com.kronos.spring.config.KronosProperty;
-import com.kronos.spring.support.ConversionContext;
-import com.kronos.spring.support.ObjectProcessor;
-import com.kronos.spring.support.converter.impl.*;
+import com.kronos.spring.support.converters.*;
 
 import java.time.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,10 +21,10 @@ public class TimeZoneConverter {
     private final Map<Class<?>, TypeConverter<?>> typeConverters;
     private final ObjectProcessor                 objectProcessor;
 
-    public TimeZoneConverter(KronosProperty properties) {
+    public TimeZoneConverter(KronosProperty properties, List<TypeConverter<?>> customConverters) {
         this.backendZoneId = ZoneId.of(properties.getBackendZoneId());
         this.defaultDateFormat = properties.getDefaultDateTimeFormat();
-        this.typeConverters = initializeTypeConverters();
+        this.typeConverters = initializeTypeConverters(customConverters);
         this.objectProcessor = new ObjectProcessor(typeConverters);
     }
 
@@ -63,17 +62,31 @@ public class TimeZoneConverter {
         return (T) objectProcessor.process(object, context);
     }
 
-    /**
-     * 初始化默认类型转换器
-     */
-    private Map<Class<?>, TypeConverter<?>> initializeTypeConverters() {
+    private Map<Class<?>, TypeConverter<?>> initializeTypeConverters(List<TypeConverter<?>> customConverters) {
         Map<Class<?>, TypeConverter<?>> converters = new ConcurrentHashMap<>();
+
+        // 注册默认转换器
+        registerDefaultConverters(converters);
+
+        // 注册自动装配的自定义转换器
+        if (customConverters != null) {
+            for (TypeConverter<?> converter : customConverters) {
+                converters.put(converter.supportedType(), converter);
+            }
+        }
+
+        return converters;
+    }
+
+    /**
+     * 注册默认转换器
+     */
+    private void registerDefaultConverters(Map<Class<?>, TypeConverter<?>> converters) {
         converters.put(String.class, new StringDateTimeConverter());
         converters.put(Date.class, new DateConverter());
         converters.put(LocalDateTime.class, new LocalDateTimeConverter());
         converters.put(ZonedDateTime.class, new ZonedDateTimeConverter());
         converters.put(Instant.class, new InstantConverter());
         converters.put(OffsetDateTime.class, new OffsetDateTimeConverter());
-        return converters;
     }
 }

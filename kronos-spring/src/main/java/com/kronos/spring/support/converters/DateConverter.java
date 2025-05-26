@@ -1,6 +1,6 @@
-package com.kronos.spring.support.converter.impl;
+package com.kronos.spring.support.converters;
 
-import com.kronos.spring.support.converter.TypeConverter;
+import com.kronos.spring.support.TypeConverter;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -27,5 +27,10 @@ public class DateConverter implements TypeConverter<Date> {
 
         // 转回Date
         return Date.from(converted.toInstant());
+    }
+
+    @Override
+    public Class<Date> supportedType() {
+        return Date.class;
     }
 }

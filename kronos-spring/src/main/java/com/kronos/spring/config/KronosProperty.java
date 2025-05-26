@@ -19,11 +19,6 @@ public class KronosProperty {
     public static final String PREFIX = "spring.kronos";
 
     /**
-     * 是否启用时区转换
-     */
-    private Boolean enabled = true;
-
-    /**
      * 后端标准时区ID，默认为UTC
      */
     private String backendZoneId = "UTC";

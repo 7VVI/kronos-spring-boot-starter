@@ -1,7 +1,6 @@
 package com.kronos.spring.support;
 
 import com.kronos.spring.annotation.Time;
-import com.kronos.spring.support.converter.TypeConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -17,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ObjectProcessor {
     private final Map<Class<?>, TypeConverter<?>> typeConverters;
+
+    // 缓存反射信息，提高性能
     private final Map<Class<?>, List<Field>>      fieldCache;
 
     public ObjectProcessor(Map<Class<?>, TypeConverter<?>> typeConverters) {

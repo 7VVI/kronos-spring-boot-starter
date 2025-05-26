@@ -1,6 +1,6 @@
-package com.kronos.spring.support.converter.impl;
+package com.kronos.spring.support.converters;
 
-import com.kronos.spring.support.converter.TypeConverter;
+import com.kronos.spring.support.TypeConverter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -42,5 +42,10 @@ public class StringDateTimeConverter implements TypeConverter<String> {
             // 如果无法解析，则认为不是时间格式的字符串，原样返回
             return value;
         }
+    }
+
+    @Override
+    public Class<String> supportedType() {
+        return String.class;
     }
 }

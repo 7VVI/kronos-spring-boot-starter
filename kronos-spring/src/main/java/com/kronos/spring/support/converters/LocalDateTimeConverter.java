@@ -1,6 +1,6 @@
-package com.kronos.spring.support.converter.impl;
+package com.kronos.spring.support.converters;
 
-import com.kronos.spring.support.converter.TypeConverter;
+import com.kronos.spring.support.TypeConverter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,5 +26,10 @@ public class LocalDateTimeConverter implements TypeConverter<LocalDateTime> {
 
         // 转回LocalDateTime
         return converted.toLocalDateTime();
+    }
+
+    @Override
+    public Class<LocalDateTime> supportedType() {
+        return LocalDateTime.class;
     }
 }

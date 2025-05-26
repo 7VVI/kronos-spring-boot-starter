@@ -3,7 +3,7 @@ package com.kronos.spring.config;
 import com.kronos.spring.annotation.ConvertTime;
 import com.kronos.spring.aop.KronosAnnotationAdvisor;
 import com.kronos.spring.aop.KronosAnnotationInterceptor;
-import com.kronos.spring.support.converter.TimeZoneConverter;
+import com.kronos.spring.support.TimeZoneConverter;
 import org.springframework.aop.framework.autoproxy.AbstractBeanFactoryAwareAdvisingPostProcessor;
 import org.springframework.beans.factory.BeanFactory;
 
